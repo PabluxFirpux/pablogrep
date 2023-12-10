@@ -33,3 +33,4 @@
 
 # Specific files
 .vscode
+cmake-build-debug/test.txt

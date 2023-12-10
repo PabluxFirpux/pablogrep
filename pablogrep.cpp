@@ -1,6 +1,12 @@
 #include <iostream>
 #include <string>
+#include "src/Grep.h"
 using namespace std;
+
+void print_usage()
+{
+    cout << "Usage: pablogrep [PATTERN] [FILE]" << endl;
+}
 
 int main(int argc, char **argv)
 {
@@ -8,11 +14,24 @@ int main(int argc, char **argv)
 
     if (argc == 1)
     {
-        cout << "No extra Command Line Argument passed "
+        cout << "No extra Command Line Argument passed"
                 "other than program name"
              << endl;
+        print_usage();
     }
-    if (argc > 1)
+    else if (argc == 2)
+    {
+        cout << "Missing command line argument."
+             << endl;
+        print_usage();
+    }
+    else if (argc == 3)
+    {
+        string pattern = argv[1];
+        string filename = argv[2];
+        pablo::Grep::grep(pattern, filename);
+    }
+    else if (argc > 1)
     {
         cout << "Number of arguments passed: " << argc
              << endl;
