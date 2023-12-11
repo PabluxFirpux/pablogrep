@@ -13,18 +13,23 @@ namespace pablo {
     public:
         Grep();
         ~Grep();
-        static void grep(std::string pattern, std::string filename);
-        static void recursive_grep(std::string pattern, std::string directory);
-        static void directory_grep(std::string pattern, std::string directory);
+        void grep(std::string pattern, std::string filename);
+         void recursive_grep(std::string pattern, std::string directory);
+         void directory_grep(std::string pattern, std::string directory);
+        void set_show_filename(bool recursive);
+        void set_inverted(bool inverted);
+        void set_recursive(bool recursive);
     private:
+        bool show_filename;
+        bool is_inverted;
         bool is_recursive;
-        static bool is_file(std::string filename);
+         bool is_file(std::string filename);
         //static bool is_readable(std::string filename);
         //static bool is_writable(std::string filename);
-        static bool match(std::string pattern, std::string line);
-        static void check_file(std::string pattern ,std::string filename, bool show_filename = false);
-        static bool is_directory(std::string path);
-        static bool isfile(std::string path);
+         bool match(std::string pattern, std::string line);
+        void check_file(std::string pattern ,std::string filename);
+         bool is_directory(std::string path);
+         bool isfile(std::string path);
     };
 
 } // pablo
