@@ -11,12 +11,19 @@
 
 namespace pablo {
 
-    Grep::Grep() = default;
+    Grep::Grep() {
+        show_filename = false;
+        is_inverted = false;
+        is_recursive = false;
+    }
 
     Grep::~Grep() = default;
 
     void Grep::grep(std::string pattern, std::string filename) {
-        if (is_directory(filename)) {
+        if (is_recursive) {
+            recursive_grep(pattern, filename);
+        } else if (is_directory(filename)) {
+            set_show_filename(true);
             directory_grep(pattern, filename);
         } else if (isfile(filename)) {
             check_file(pattern, filename);
@@ -45,17 +52,22 @@ namespace pablo {
         }
     }
 
-    void Grep::check_file(std::string pattern, std::string filename, bool show_filename) {
+    void Grep::check_file(std::string pattern, std::string filename) {
         std::ifstream infile;
         infile.open(filename);
         std::string line;
+        int line_number = 1;
         while (std::getline(infile, line)) {
-            if (match(pattern, line)) {
+            if (match(pattern, line)  == !is_inverted) {
                 if (show_filename) {
                     std::cout << filename << ": ";
+                    std::cout << line_number << "- ";
+                } else {
+                    std::cout << line_number << "- ";
                 }
                 std::cout << line << std::endl;
             }
+            line_number++;
         }
         infile.close();
     }
@@ -70,7 +82,7 @@ namespace pablo {
                 if(is_directory(dir_entry.path().string())) {
                     recursive_grep(pattern, dir_entry.path().string());
                 } else if (isfile(dir_entry.path().string())){
-                    check_file(pattern, dir_entry.path().string(), true);
+                    check_file(pattern, dir_entry.path().string());
                 }
         } catch (std::filesystem::filesystem_error &e) {
             //std::cout << "Error: " << e.what() << std::endl;
@@ -88,7 +100,22 @@ namespace pablo {
     void Grep::directory_grep(std::string pattern, std::string directory) {
         for (auto const& dir_entry : std::filesystem::directory_iterator(directory))
             if (isfile(dir_entry.path().string())){
-                check_file(pattern, dir_entry.path().string(), true);
+                check_file(pattern, dir_entry.path().string());
             }
+    }
+
+    void Grep::set_inverted(bool inverted) {
+        is_inverted = inverted;
+    }
+
+    void Grep::set_show_filename(bool show_filename) {
+        this->show_filename = show_filename;
+    }
+
+    void Grep::set_recursive(bool recursive) {
+        is_recursive = recursive;
+        if (is_recursive) {
+            set_show_filename(true);
+        }
     }
 } // pablo
