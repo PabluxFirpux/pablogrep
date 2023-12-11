@@ -16,7 +16,7 @@ void print_help() {
     cout << "Example: pablogrep -r 'hello world' menu.h main.cpp" << endl;
     cout << "Flags:" << endl;
     cout << "-v, --invert-match\tInvert match, select non-matching lines" << endl;
-    cout << "-l, --files-with-matches\tOnly print filenames containing matches" << endl;
+    cout << "-l, --file-names\tPrint filenames containing matches" << endl;
     cout << "-r, --recursive\tRead all files under each directory, recursively" << endl;
     cout << "-h, --help\tPrint this help message and exit" << endl;
 
