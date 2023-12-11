@@ -33,7 +33,8 @@ int main(int argc, char **argv)
     }
     else if (argc > 3)
     {
-        if (argv[1] == "-r") {
+        string flag = argv[1];
+        if (flag.compare("-r") == 0) {
             cout << "Recursive grep" << endl;
             string pattern = argv[2];
             string filename = argv[3];

@@ -19,7 +19,7 @@ namespace pablo {
         if (is_directory(filename)) {
             directory_grep(pattern, filename);
         } else if (isfile(filename)) {
-            check_file(pattern, filename, false);
+            check_file(pattern, filename);
         } else {
             std::cout << "File is not a file." << std::endl;
             return;
@@ -45,27 +45,36 @@ namespace pablo {
         }
     }
 
-    void Grep::check_file(std::string pattern, std::string filename, bool is_recursive) {
+    void Grep::check_file(std::string pattern, std::string filename, bool show_filename) {
         std::ifstream infile;
         infile.open(filename);
         std::string line;
         while (std::getline(infile, line)) {
             if (match(pattern, line)) {
-                if (is_recursive) {
+                if (show_filename) {
                     std::cout << filename << ": ";
                 }
                 std::cout << line << std::endl;
             }
         }
+        infile.close();
     }
 
     void Grep::recursive_grep(std::string pattern, std::string directory) {
-        for (auto const& dir_entry : std::filesystem::recursive_directory_iterator(directory))
-            if(is_directory(dir_entry.path().string())) {
-                recursive_grep(pattern, dir_entry.path().string());
-            } else if (isfile(dir_entry.path().string())){
-                check_file(pattern, dir_entry.path().string(), true);
-            }
+        if (!is_directory(directory)) {
+            std::cout << "Path is not a directory. Can't search recursively" << std::endl;
+            return;
+        }
+        try {
+            for (auto const& dir_entry : std::filesystem::directory_iterator(directory, std::filesystem::directory_options::skip_permission_denied))
+                if(is_directory(dir_entry.path().string())) {
+                    recursive_grep(pattern, dir_entry.path().string());
+                } else if (isfile(dir_entry.path().string())){
+                    check_file(pattern, dir_entry.path().string(), true);
+                }
+        } catch (std::filesystem::filesystem_error &e) {
+            //std::cout << "Error: " << e.what() << std::endl;
+        }
     }
 
     bool Grep::is_directory(std::string path) {
@@ -78,11 +87,8 @@ namespace pablo {
 
     void Grep::directory_grep(std::string pattern, std::string directory) {
         for (auto const& dir_entry : std::filesystem::directory_iterator(directory))
-            if(is_directory(dir_entry.path().string())) {
-
-            } else if (isfile(dir_entry.path().string())){
+            if (isfile(dir_entry.path().string())){
                 check_file(pattern, dir_entry.path().string(), true);
             }
-
     }
 } // pablo
