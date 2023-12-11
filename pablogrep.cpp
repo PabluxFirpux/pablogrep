@@ -31,17 +31,17 @@ int main(int argc, char **argv)
         string filename = argv[2];
         pablo::Grep::grep(pattern, filename);
     }
-    else if (argc > 1)
+    else if (argc > 3)
     {
-        cout << "Number of arguments passed: " << argc
-             << endl;
-        cout << "----Following are the commnand line "
-                "arguments passed----"
-             << endl;
-        for (int i = 0; i < argc; i++)
-        {
-            cout << "argv[" << i << "]: " << argv[i]
-                 << '\n';
+        if (argv[1] == "-r") {
+            cout << "Recursive grep" << endl;
+            string pattern = argv[2];
+            string filename = argv[3];
+            pablo::Grep::recursive_grep(pattern, filename);
+        } else {
+            cout << "Too many arguments passed."
+                 << endl;
+            print_usage();
         }
     }
     return 0;
