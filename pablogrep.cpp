@@ -24,7 +24,6 @@ void print_help() {
 
 int main(int argc, char **argv)
 {
-    cout << "Program name is: " << argv[0] << endl;
     auto start = std::chrono::high_resolution_clock::now();
     pablo::Grep grep;
     grep = pablo::Grep();
